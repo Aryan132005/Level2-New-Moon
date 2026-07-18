@@ -176,6 +176,20 @@ export class VotingClient {
     }
   }
 
+  // Robust wallet detector supporting different naming keys under window.midnight
+  private getWallet() {
+    const midnight = (window as any).midnight;
+    if (!midnight) return null;
+    let wallet = midnight.mnLace;
+    if (!wallet) {
+      const providers = Object.values(midnight);
+      if (providers.length > 0) {
+        wallet = providers[0];
+      }
+    }
+    return wallet;
+  }
+
   // Detect and connect real Midnight Lace Wallet
   public async detectAndConnectWallet(silent = false) {
     const isSandbox = this.mode$.value === 'sandbox';
@@ -186,8 +200,8 @@ export class VotingClient {
       return;
     }
 
-    this.addLog('info', 'Scanning for Midnight Lace Wallet extension...');
-    const wallet = (window as any).midnight?.mnLace;
+    this.addLog('info', 'Scanning for Midnight wallet extension...');
+    const wallet = this.getWallet();
 
     if (!wallet) {
       if (!silent) this.addLog('error', 'Lace Wallet for Midnight not found. Please install the chrome extension.');
@@ -252,7 +266,7 @@ export class VotingClient {
     } else {
       // Live Network Deployment
       try {
-        const wallet = (window as any).midnight?.mnLace;
+        const wallet = this.getWallet();
         if (!wallet) throw new Error("Lace Wallet not connected.");
         const api = await wallet.enable();
         const state = await api.state();
@@ -361,7 +375,7 @@ export class VotingClient {
     } else {
       // Live Network load contract
       try {
-        const wallet = (window as any).midnight?.mnLace;
+        const wallet = this.getWallet();
         if (!wallet) throw new Error("Wallet not connected.");
         const api = await wallet.enable();
         const state = await api.state();
@@ -528,7 +542,7 @@ export class VotingClient {
         if (!this.liveDeployedContract) throw new Error("Contract instance not initialized.");
         
         this.addLog('zk', '[PROVER] Instantiating private state witnesses...');
-        const wallet = (window as any).midnight?.mnLace;
+        const wallet = this.getWallet();
         const api = await wallet.enable();
         const state = await api.state();
         
@@ -603,7 +617,7 @@ export class VotingClient {
       try {
         if (!this.liveDeployedContract) throw new Error("Contract instance not initialized.");
         
-        const wallet = (window as any).midnight?.mnLace;
+        const wallet = this.getWallet();
         const api = await wallet.enable();
         const state = await api.state();
         

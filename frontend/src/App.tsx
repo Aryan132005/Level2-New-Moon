@@ -16,6 +16,23 @@ function App() {
   const [walletConnected, setWalletConnected] = useState<boolean>(false);
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [activeContractAddress, setActiveContractAddress] = useState<string | null>(null);
+  const [walletInstalled, setWalletInstalled] = useState<boolean>(false);
+
+  // Detect wallet installation
+  useEffect(() => {
+    const checkWallet = () => {
+      const hasMidnight = !!(window as any).midnight;
+      setWalletInstalled(hasMidnight);
+    };
+    checkWallet();
+    
+    const timer = setTimeout(checkWallet, 1000);
+    window.addEventListener('load', checkWallet);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('load', checkWallet);
+    };
+  }, []);
 
   // Forms and actions input state
   const [setupTab, setSetupTab] = useState<'deploy' | 'load'>('deploy');
@@ -143,12 +160,22 @@ function App() {
       </header>
 
       {/* Warning banner for Midnight Lace Wallet not detected in preprod */}
-      {mode === 'preprod' && !walletConnected && (
+      {mode === 'preprod' && !walletInstalled && (
         <div className="warning-banner">
           <div>
             <strong>Lace Extension Wallet Not Detected.</strong> To use the live Midnight Preprod testnet, install the Lace browser extension. Otherwise, switch to <strong>Simulated Sandbox</strong> mode to run the full application logic in memory.
           </div>
           <button onClick={() => client.setMode('sandbox')}>Switch to Sandbox</button>
+        </div>
+      )}
+
+      {/* Guide banner for when wallet is installed but not connected yet */}
+      {mode === 'preprod' && walletInstalled && !walletConnected && (
+        <div className="warning-banner" style={{ background: 'rgba(59, 130, 246, 0.1)', borderColor: 'rgba(59, 130, 246, 0.3)', color: 'rgb(147, 197, 253)' }}>
+          <div>
+            <strong>Lace Wallet Detected:</strong> Extension is active! Please click the <strong>Connect Wallet</strong> button in the top right to start.
+          </div>
+          <button style={{ background: 'rgba(59, 130, 246, 0.2)', color: 'white', border: '1px solid rgba(59, 130, 246, 0.4)', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer' }} onClick={handleConnectWallet}>Connect Now</button>
         </div>
       )}
 
