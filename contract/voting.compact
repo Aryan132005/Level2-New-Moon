@@ -1,0 +1,59 @@
+pragma language_version 0.23;
+
+import CompactStandardLibrary;
+
+// Ledger state (public)
+export ledger proposalId: Bytes<32>;
+export ledger proposalText: Opaque<"string">;
+export ledger yesTally: Counter;
+export ledger noTally: Counter;
+export ledger nullifierSet: Map<Bytes<32>, Boolean>;
+export ledger votingOpen: Boolean;
+export ledger adminCommitment: Bytes<32>;
+
+// Private witness declarations
+witness voterSecretKey(): Bytes<32>;
+witness voteChoice(): Boolean;
+witness adminSecretKey(): Bytes<32>;
+
+// Constructor to initialize state
+constructor(pId: Bytes<32>, pText: Opaque<"string">, adminCommit: Bytes<32>) {
+    proposalId = disclose(pId);
+    proposalText = disclose(pText);
+    votingOpen = true;
+    adminCommitment = disclose(adminCommit);
+}
+
+// Circuit to cast a vote
+export circuit castVote(): [] {
+    // Assert voting is currently open
+    assert(votingOpen, "Voting is closed");
+
+    // Retrieve private inputs via witness functions
+    const sk = voterSecretKey();
+    const choice = disclose(voteChoice());
+
+    // Derive nullifier inside the ZK proof: nullifier = persistentHash(secret key + proposal ID)
+    const nullifier = disclose(persistentHash<Vector<2, Bytes<32>>>([sk, proposalId]));
+
+    // Prevent double voting by checking if nullifier is already present on the ledger
+    assert(!nullifierSet.member(nullifier), "Double voting is not allowed");
+
+    // Mark nullifier as spent on-chain
+    nullifierSet.insert(nullifier, true);
+
+    // Publicly increment tally delta without revealing choice-voter mapping
+    if (choice) {
+        yesTally.increment(1);
+    } else {
+        noTally.increment(1);
+    }
+}
+
+// Circuit to close the voting period (admin-only)
+export circuit closeVoting(): [] {
+    const adminSk = adminSecretKey();
+    // Validate admin credentials by verifying their secret key matches the commitment
+    assert(disclose(persistentHash<Bytes<32>>(adminSk) == adminCommitment), "Unauthorized admin");
+    votingOpen = false;
+}

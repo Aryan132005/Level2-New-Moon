@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../../../",
+  "sources": ["contracts/voting.compact", "compiler/standard-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAmBA;;;;;;;;;;;;;;;;;;;MAQA,AAAA,QAuBC;;;;;;;;;;;;;;;;;;;;;;OAAA;MAGD,AAAA,WAKC;;;;;;;;;;;;;;;;;;;;;;OAAA;;;;;;;;;;GAlCA;EALD;;;;;UAAY,KAAc;UAAE,OAAuB;UAAE,aAAsB;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAd3E;;;;;;;;;yEAAoC;IACpC;;;;;;;;;yEAA6C;IAC7C;;;;;;;;;yEAAgC;IAChC;;;;;;;;;yEAA+B;IAC/B;;;;;;;;;;yEAAoD;IACpD;;;;;;;;;yEAAkC;IAClC;;;;;;;;;yEAAyC;IASrC;;;;;;;2HAAsB,KAAG;;yEAAf;IACV;;;;;;;2HAAwB,OAAK;;yEAAjB;IACZ;;;;;;;;;yEAAU;IACV;;;;;;;2HAA2B,aAAW;;yEAAvB;;;;;;;GAClB;ECxBD,AAAA,kBAAA;oEAAA;;;EAAA,AAAA,kBAAA;oEAAA;;;EDcA,AAAA,iBAAoC;;0DAApC,cAAoC;;;;;;;;;;;;;;GAAA;EACpC,AAAA,aAA8B;;0DAA9B,UAA8B;;;;;;;;;;;;;;GAAA;EAC9B,AAAA,iBAAoC;;0DAApC,cAAoC;;;;;;;;;;;;;;GAAA;EAWpC,AAAA,WAuBC;oDArBU;;;;;;;;;;;yHAAU;;UAGX,IAAqB;UACrB,QAA+B;UAG/B,WAA4E,2BAAjB,IAAE;wEAAE;;;;;;;;;;;6IAAU;qDAGvE;;;;;;;;;;;4KAAoB,WAAS;;;;0HAAjB;;IAGpB;;;;;;;;;;2HAAoB,WAAS;;;;;;wEAAjB;QAGR,QAAM;YACN,KAAQ;MAAR;;;;;;;;;;+FAAA,KAAQ;;;;0EAAA;;YAER,KAAO;MAAP;;;;;;;;;;+FAAA,KAAO;;;;0EAAA;;;GAEd;EAGD,AAAA,cAKC;UAJS,SAA0B;iEAEU,SAAO;kEAAK;;;;;;;;;;;uIAAe;;IACrE;;;;;;;;;yEAAU;;GACb;;;;;;;;;;;;;;;;;;;;IArDD;qCAAA;;;;;;;;;;;0GAAoC;KAAA;IACpC;qCAAA;;;;;;;;;;;0GAA6C;KAAA;IAC7C;qCAAA;;;;;;;;;;;0GAAgC;KAAA;IAChC;qCAAA;;;;;;;;;;;0GAA+B;KAAA;IAC/B;;;;;uCAAA;;;;;;;;;;;;;;;;4GAAoD;;;;;;uCAApD;;;;;;;;;;;;4GAAoD;;;;;;;;;;;;;;uCAApD;;;;;;;;;;;;;;;4GAAoD;;;;;;;;;;;;;;uCAApD;;;;;;;;;;;;;;;;;4GAAoD;;;;;;;;;KAAA;IACpD;qCAAA;;;;;;;;;;;0GAAkC;KAAA;IAClC;qCAAA;;;;;;;;;;;0GAAyC;KAAA;;;;;;;;;;;;;;"
+}
