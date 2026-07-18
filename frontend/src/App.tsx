@@ -19,7 +19,7 @@ function App() {
 
   // Forms and actions input state
   const [setupTab, setSetupTab] = useState<'deploy' | 'load'>('deploy');
-  const [proposalText, setProposalText] = useState('Should we deploy Midnight ZK smart contracts for organization governance?');
+  const [proposalText, setProposalText] = useState('');
   const [proposalId, setProposalId] = useState('');
   const [adminSecretKey, setAdminSecretKey] = useState('');
   const [loadAddress, setLoadAddress] = useState('');
@@ -28,13 +28,6 @@ function App() {
   const [voteChoice, setVoteChoice] = useState<boolean | null>(null);
   
   const [adminCloseKey, setAdminCloseKey] = useState('');
-
-  // Setup initial key values on load
-  useEffect(() => {
-    setProposalId(generateRandomHex(32));
-    setAdminSecretKey(generateRandomHex(32));
-    setVoterSecretKey(generateRandomHex(32));
-  }, []);
 
   // Connect React to RxJS subjects in votingClient
   useEffect(() => {

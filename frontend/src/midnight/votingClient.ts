@@ -98,13 +98,13 @@ export class VotingClient {
     this.mode$.next(mode);
     this.addLog('info', `Switched to ${mode === 'sandbox' ? 'Simulated Sandbox' : 'Midnight Preprod Network'} mode.`);
     
+    // Always reset wallet connection when switching modes so user has to click Connect Wallet
+    this.walletConnected$.next(false);
+    this.walletAddress$.next(null);
+
     if (mode === 'sandbox') {
-      this.walletConnected$.next(true);
-      this.walletAddress$.next('sandbox-voter-wallet-address');
       this.loadSandboxState();
     } else {
-      this.walletConnected$.next(false);
-      this.walletAddress$.next(null);
       this.ledgerState$.next(null);
       this.activeContractAddress$.next(null);
       this.liveDeployedContract = null;
@@ -112,7 +112,6 @@ export class VotingClient {
         this.liveContractSubscription.unsubscribe();
         this.liveContractSubscription = null;
       }
-      this.detectAndConnectWallet(true); // Auto check
     }
   }
 
@@ -153,9 +152,6 @@ export class VotingClient {
         this.ledgerState$.next(null);
         this.activeContractAddress$.next(null);
       }
-      // In sandbox, the wallet is always mock connected
-      this.walletConnected$.next(true);
-      this.walletAddress$.next('sandbox-voter-wallet-address');
     } catch (e) {
       this.addLog('error', `Failed to load sandbox state: ${(e as Error).message}`);
     }
