@@ -208,6 +208,17 @@ export class VotingClient {
     }
 
     this.addLog('info', 'Scanning for Midnight wallet extension...');
+    const midnight = (window as any).midnight;
+    if (midnight) {
+      this.addLog('info', `Found window.midnight. Keys: ${Object.keys(midnight).join(', ')}`);
+      for (const key of Object.keys(midnight)) {
+        const val = midnight[key];
+        this.addLog('info', `Key: ${key}, Type: ${typeof val}, HasEnable: ${val ? typeof val.enable : 'undefined'}`);
+      }
+    } else {
+      this.addLog('info', 'window.midnight is undefined');
+    }
+
     const wallet = this.getWallet();
 
     if (!wallet) {
