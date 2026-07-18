@@ -83,6 +83,7 @@ function App() {
     }
     await client.castVote(voterSecretKey, choice);
     setVoteChoice(null); // Reset selection UI after submit
+    setVoterSecretKey(''); // Clear voter key so next vote needs a new key
   };
 
   const handleCloseCampaign = async (e: React.FormEvent) => {
@@ -207,7 +208,7 @@ function App() {
                   <div className="input-container">
                     <input
                       id="admin-sk"
-                      type="password"
+                      type="text"
                       value={adminSecretKey}
                       onChange={(e) => setAdminSecretKey(e.target.value)}
                       placeholder="0x..."
@@ -260,7 +261,7 @@ function App() {
                   <div className="input-container">
                     <input
                       id="voter-sk"
-                      type="password"
+                      type="text"
                       value={voterSecretKey}
                       onChange={(e) => setVoterSecretKey(e.target.value)}
                       placeholder="Enter private ZK witness key..."
@@ -315,7 +316,7 @@ function App() {
                   <div className="input-container">
                     <input
                       id="admin-close-sk"
-                      type="password"
+                      type="text"
                       value={adminCloseKey}
                       onChange={(e) => setAdminCloseKey(e.target.value)}
                       placeholder="Verify admin secret key to close..."
