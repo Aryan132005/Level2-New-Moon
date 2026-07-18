@@ -84,7 +84,7 @@ export class VotingClient {
   public readonly activeContractAddress$ = new BehaviorSubject<string | null>(null);
 
   // Active network ID detected dynamically during wallet connection
-  public activeNetworkId: 'preprod' | 'preview' | 'undeployed' = 'preprod';
+  public activeNetworkId: any = 'preprod';
 
   // Live contract reference
   private liveDeployedContract: any = null;
@@ -232,36 +232,32 @@ export class VotingClient {
     }
 
     let api;
-    let successfulNetworkId: 'preprod' | 'preview' | 'undeployed' = 'preprod';
+    let successfulNetworkId = '';
+    const networks = ['preprod', 'preview', 'undeployed', 'devnet', 'testnet', 'local', 'standalone', 'mainnet'];
     
-    try {
-      this.addLog('info', "Attempting connection using 'preprod'...");
-      api = await wallet.connect('preprod');
-      successfulNetworkId = 'preprod';
-    } catch (e: any) {
-      if (e.message && e.message.includes('Network ID mismatch')) {
-        try {
-          this.addLog('info', "Network ID mismatch on 'preprod'. Trying 'preview'...");
-          api = await wallet.connect('preview');
-          successfulNetworkId = 'preview';
-        } catch (e2: any) {
-          try {
-            this.addLog('info', "Network ID mismatch on 'preview'. Trying 'undeployed'...");
-            api = await wallet.connect('undeployed');
-            successfulNetworkId = 'undeployed';
-          } catch (e3: any) {
-            this.addLog('error', `Connection failed: Network ID mismatch. Please set your wallet environment to Preprod, Preview, or Undeployed.`);
-            this.walletConnected$.next(false);
-            this.walletAddress$.next(null);
-            return;
-          }
+    for (const netId of networks) {
+      try {
+        this.addLog('info', `Attempting connection using '${netId}'...`);
+        api = await wallet.connect(netId);
+        successfulNetworkId = netId;
+        break;
+      } catch (e: any) {
+        if (e.message && e.message.includes('Network ID mismatch')) {
+          this.addLog('info', `Network ID mismatch on '${netId}'. Trying next...`);
+        } else {
+          this.addLog('error', `Connection error on '${netId}': ${e.message}`);
+          this.walletConnected$.next(false);
+          this.walletAddress$.next(null);
+          return;
         }
-      } else {
-        this.addLog('error', `Failed to connect wallet: ${e.message}`);
-        this.walletConnected$.next(false);
-        this.walletAddress$.next(null);
-        return;
       }
+    }
+
+    if (!api) {
+      this.addLog('error', `Connection failed: Network ID mismatch. Please set your wallet environment to a supported network (Preprod, Preview, Undeployed, etc.).`);
+      this.walletConnected$.next(false);
+      this.walletAddress$.next(null);
+      return;
     }
 
     try {
