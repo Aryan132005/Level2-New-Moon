@@ -128,9 +128,9 @@ function App() {
 
           <div className="wallet-status">
             {walletConnected ? (
-              <span className="badge badge-connected">
+              <span className="badge badge-connected" title={walletAddress || undefined}>
                 <span className="dot dot-pulse"></span>
-                Connected
+                {walletAddress ? `${walletAddress.substring(0, 6)}...${walletAddress.slice(-4)}` : 'Connected'}
               </span>
             ) : (
               <button className="btn-secondary" style={{ padding: '8px 16px', borderRadius: '10px' }} onClick={handleConnectWallet}>
@@ -299,7 +299,7 @@ function App() {
                 </button>
               </>
             ) : (
-              <div style={{ textAlignment: 'center', color: 'var(--text-muted)', padding: '20px 0' }}>
+              <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px 0' }}>
                 Please deploy or load an active voting campaign to cast votes.
               </div>
             )}
@@ -398,7 +398,7 @@ function App() {
                 </div>
               </>
             ) : (
-              <div style={{ textAlignment: 'center', color: 'var(--text-muted)', padding: '40px 0' }}>
+              <div style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '40px 0' }}>
                 No active campaign loaded. Deploy a new campaign or join an existing contract address to view ledger tallies.
               </div>
             )}

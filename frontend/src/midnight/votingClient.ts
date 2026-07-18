@@ -327,8 +327,9 @@ export class VotingClient {
         });
         
         this.liveDeployedContract = deployed;
-        this.activeContractAddress$.next(deployed.address);
-        this.addLog('success', `Deployed on Preprod network! Address: ${deployed.address}`);
+        const deployedAddress = deployed.deployTxData.public.contractAddress;
+        this.activeContractAddress$.next(deployedAddress);
+        this.addLog('success', `Deployed on Preprod network! Address: ${deployedAddress}`);
         
         // Subscribe to ledger changes
         this.subscribeToLiveContractState(deployed);
