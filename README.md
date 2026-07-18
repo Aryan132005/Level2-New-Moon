@@ -1,5 +1,11 @@
 # New Moon: Privacy-Preserving ZK Voting DApp on Midnight
 
+### Live Demo Deploy
+https://level2-new-moon.vercel.app/
+
+### Demo Video
+https://drive.google.com/file/d/1Vm2uK66IR9Xiy0HzQaJHz8piQC98-5lB/view?usp=sharing
+
 New Moon is a privacy-first decentralized voting application built on the **Midnight Network**, a data-protection blockchain from IOG. It utilizes zero-knowledge (ZK) circuits written in **Compact** to allow voters to securely cast votes on proposals while preserving their identity and choice.
 
 ## Features
