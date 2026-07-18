@@ -180,14 +180,21 @@ export class VotingClient {
   private getWallet() {
     const midnight = (window as any).midnight;
     if (!midnight) return null;
-    let wallet = midnight.mnLace;
-    if (!wallet) {
-      const providers = Object.values(midnight);
-      if (providers.length > 0) {
-        wallet = providers[0];
+    
+    // 1. Direct check for mnLace if it's a valid provider with an enable function
+    if (midnight.mnLace && typeof midnight.mnLace.enable === 'function') {
+      return midnight.mnLace;
+    }
+    
+    // 2. Scan all properties in window.midnight to find one that has a valid enable function
+    for (const key of Object.keys(midnight)) {
+      const provider = midnight[key];
+      if (provider && typeof provider.enable === 'function') {
+        return provider;
       }
     }
-    return wallet;
+    
+    return null;
   }
 
   // Detect and connect real Midnight Lace Wallet
