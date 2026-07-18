@@ -181,15 +181,15 @@ export class VotingClient {
     const midnight = (window as any).midnight;
     if (!midnight) return null;
     
-    // 1. Direct check for mnLace if it's a valid provider with an enable function
-    if (midnight.mnLace && typeof midnight.mnLace.enable === 'function') {
+    // 1. Direct check for mnLace if it's a valid provider with a connect function
+    if (midnight.mnLace && typeof midnight.mnLace.connect === 'function') {
       return midnight.mnLace;
     }
     
-    // 2. Scan all properties in window.midnight to find one that has a valid enable function
+    // 2. Scan all properties in window.midnight to find one that has a valid connect function
     for (const key of Object.keys(midnight)) {
       const provider = midnight[key];
-      if (provider && typeof provider.enable === 'function') {
+      if (provider && typeof provider.connect === 'function') {
         return provider;
       }
     }
@@ -213,7 +213,7 @@ export class VotingClient {
       this.addLog('info', `Found window.midnight. Keys: ${Object.keys(midnight).join(', ')}`);
       for (const key of Object.keys(midnight)) {
         const val = midnight[key];
-        this.addLog('info', `Key: ${key}, Type: ${typeof val}, HasEnable: ${val ? typeof val.enable : 'undefined'}`);
+        this.addLog('info', `Key: ${key}, Type: ${typeof val}, HasConnect: ${val ? typeof val.connect : 'undefined'}`);
       }
     } else {
       this.addLog('info', 'window.midnight is undefined');
@@ -229,7 +229,7 @@ export class VotingClient {
     }
 
     try {
-      const api = await wallet.enable();
+      const api = await wallet.connect('preprod');
       const state = await api.state();
       this.walletConnected$.next(true);
       this.walletAddress$.next(state.address);
@@ -286,7 +286,7 @@ export class VotingClient {
       try {
         const wallet = this.getWallet();
         if (!wallet) throw new Error("Lace Wallet not connected.");
-        const api = await wallet.enable();
+        const api = await wallet.connect('preprod');
         const state = await api.state();
         
         this.addLog('info', 'Configuring ZK and network providers...');
@@ -395,7 +395,7 @@ export class VotingClient {
       try {
         const wallet = this.getWallet();
         if (!wallet) throw new Error("Wallet not connected.");
-        const api = await wallet.enable();
+        const api = await wallet.connect('preprod');
         const state = await api.state();
         
         const { levelPrivateStateProvider } = await import('@midnight-ntwrk/midnight-js-level-private-state-provider');
@@ -561,7 +561,7 @@ export class VotingClient {
         
         this.addLog('zk', '[PROVER] Instantiating private state witnesses...');
         const wallet = this.getWallet();
-        const api = await wallet.enable();
+        const api = await wallet.connect('preprod');
         const state = await api.state();
         
         const { levelPrivateStateProvider } = await import('@midnight-ntwrk/midnight-js-level-private-state-provider');
@@ -636,7 +636,7 @@ export class VotingClient {
         if (!this.liveDeployedContract) throw new Error("Contract instance not initialized.");
         
         const wallet = this.getWallet();
-        const api = await wallet.enable();
+        const api = await wallet.connect('preprod');
         const state = await api.state();
         
         const { levelPrivateStateProvider } = await import('@midnight-ntwrk/midnight-js-level-private-state-provider');
