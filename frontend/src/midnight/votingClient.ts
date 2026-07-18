@@ -83,6 +83,9 @@ export class VotingClient {
   public readonly walletAddress$ = new BehaviorSubject<string | null>(null);
   public readonly activeContractAddress$ = new BehaviorSubject<string | null>(null);
 
+  // Active network ID detected dynamically during wallet connection
+  public activeNetworkId: 'preprod' | 'preview' | 'undeployed' = 'preprod';
+
   // Live contract reference
   private liveDeployedContract: any = null;
   private liveContractSubscription: any = null;
@@ -228,14 +231,47 @@ export class VotingClient {
       return;
     }
 
+    let api;
+    let successfulNetworkId: 'preprod' | 'preview' | 'undeployed' = 'preprod';
+    
     try {
-      const api = await wallet.connect('preprod');
+      this.addLog('info', "Attempting connection using 'preprod'...");
+      api = await wallet.connect('preprod');
+      successfulNetworkId = 'preprod';
+    } catch (e: any) {
+      if (e.message && e.message.includes('Network ID mismatch')) {
+        try {
+          this.addLog('info', "Network ID mismatch on 'preprod'. Trying 'preview'...");
+          api = await wallet.connect('preview');
+          successfulNetworkId = 'preview';
+        } catch (e2: any) {
+          try {
+            this.addLog('info', "Network ID mismatch on 'preview'. Trying 'undeployed'...");
+            api = await wallet.connect('undeployed');
+            successfulNetworkId = 'undeployed';
+          } catch (e3: any) {
+            this.addLog('error', `Connection failed: Network ID mismatch. Please set your wallet environment to Preprod, Preview, or Undeployed.`);
+            this.walletConnected$.next(false);
+            this.walletAddress$.next(null);
+            return;
+          }
+        }
+      } else {
+        this.addLog('error', `Failed to connect wallet: ${e.message}`);
+        this.walletConnected$.next(false);
+        this.walletAddress$.next(null);
+        return;
+      }
+    }
+
+    try {
+      this.activeNetworkId = successfulNetworkId;
       const state = await api.state();
       this.walletConnected$.next(true);
       this.walletAddress$.next(state.address);
-      this.addLog('success', `Connected to Midnight Wallet: ${state.address.substring(0, 10)}...${state.address.slice(-6)}`);
+      this.addLog('success', `Connected to Midnight Wallet (${successfulNetworkId}): ${state.address.substring(0, 10)}...${state.address.slice(-6)}`);
     } catch (e) {
-      this.addLog('error', `Failed to connect wallet: ${(e as Error).message}`);
+      this.addLog('error', `Failed to retrieve wallet state: ${(e as Error).message}`);
       this.walletConnected$.next(false);
       this.walletAddress$.next(null);
     }
@@ -286,7 +322,7 @@ export class VotingClient {
       try {
         const wallet = this.getWallet();
         if (!wallet) throw new Error("Lace Wallet not connected.");
-        const api = await wallet.connect('preprod');
+        const api = await wallet.connect(this.activeNetworkId);
         const state = await api.state();
         
         this.addLog('info', 'Configuring ZK and network providers...');
@@ -300,7 +336,7 @@ export class VotingClient {
         const { setNetworkId } = await import('@midnight-ntwrk/midnight-js-network-id');
         const { ZKConfigProvider } = await import('@midnight-ntwrk/midnight-js-types');
         
-        setNetworkId('preprod');
+        setNetworkId(this.activeNetworkId);
         
         const indexerUrl = uris.indexer || 'https://indexer.preprod.midnight.network/v1/graphql';
         const indexerWsUrl = indexerUrl.replace('http', 'ws');
@@ -395,7 +431,7 @@ export class VotingClient {
       try {
         const wallet = this.getWallet();
         if (!wallet) throw new Error("Wallet not connected.");
-        const api = await wallet.connect('preprod');
+        const api = await wallet.connect(this.activeNetworkId);
         const state = await api.state();
         
         const { levelPrivateStateProvider } = await import('@midnight-ntwrk/midnight-js-level-private-state-provider');
@@ -403,6 +439,9 @@ export class VotingClient {
         const { httpClientProofProvider } = await import('@midnight-ntwrk/midnight-js-http-client-proof-provider');
         const { findDeployedContract } = await import('@midnight-ntwrk/midnight-js-contracts');
         const { ZKConfigProvider } = await import('@midnight-ntwrk/midnight-js-types');
+        const { setNetworkId } = await import('@midnight-ntwrk/midnight-js-network-id');
+        
+        setNetworkId(this.activeNetworkId);
         
         const uris = await wallet.serviceUriConfig();
         const indexerUrl = uris.indexer || 'https://indexer.preprod.midnight.network/v1/graphql';
@@ -561,7 +600,7 @@ export class VotingClient {
         
         this.addLog('zk', '[PROVER] Instantiating private state witnesses...');
         const wallet = this.getWallet();
-        const api = await wallet.connect('preprod');
+        const api = await wallet.connect(this.activeNetworkId);
         const state = await api.state();
         
         const { levelPrivateStateProvider } = await import('@midnight-ntwrk/midnight-js-level-private-state-provider');
@@ -636,7 +675,7 @@ export class VotingClient {
         if (!this.liveDeployedContract) throw new Error("Contract instance not initialized.");
         
         const wallet = this.getWallet();
-        const api = await wallet.connect('preprod');
+        const api = await wallet.connect(this.activeNetworkId);
         const state = await api.state();
         
         const { levelPrivateStateProvider } = await import('@midnight-ntwrk/midnight-js-level-private-state-provider');
