@@ -21,7 +21,7 @@ https://drive.google.com/file/d/1Vm2uK66IR9Xiy0HzQaJHz8piQC98-5lB/view?usp=shari
 
 ### Terminal Smart Contract Deployment Screenshot
 
-![Smart Contract Terminal Deployment Screenshot](./screenshots/terminal_deployment.png)
+![Smart Contract Terminal Deployment Screenshot](./screenshots/image.png)
 
 ---
 
