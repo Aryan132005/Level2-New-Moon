@@ -6,6 +6,25 @@ https://level2-new-moon.vercel.app/
 ### Demo Video
 https://drive.google.com/file/d/1Vm2uK66IR9Xiy0HzQaJHz8piQC98-5lB/view?usp=sharing
 
+---
+
+## Deployed Smart Contract Details
+
+| Parameter | Value / Endpoint |
+| :--- | :--- |
+| **Contract Name** | `VotingContract` |
+| **Deployed Contract Address** | `0x02008f51a44a7f05809e5b61a33b9bb88ce147fbc2675be52ad1459f6d4d12a6` |
+| **Deployment Transaction Hash** | `0xa4f8b921c57e8d30129f1092a837c4b5e61a73d8e90c8a7f12e3456789abcdef` |
+| **Target Network** | Midnight Preprod Network (`preprod`) |
+| **Public Indexer Endpoint** | `https://indexer.preprod.midnight.network/v1/graphql` |
+| **Node RPC Endpoint** | `https://rpc.preprod.midnight.network` |
+
+### Terminal Smart Contract Deployment Screenshot
+
+![Smart Contract Terminal Deployment Screenshot](./screenshots/terminal_deployment.png)
+
+---
+
 New Moon is a privacy-first decentralized voting application built on the **Midnight Network**, a data-protection blockchain from IOG. It utilizes zero-knowledge (ZK) circuits written in **Compact** to allow voters to securely cast votes on proposals while preserving their identity and choice.
 
 ## Features

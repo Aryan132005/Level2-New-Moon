@@ -1,9 +1,13 @@
 # Dependencies
 node_modules/
+**/node_modules/
 
 # Production / Build outputs
 dist/
+**/dist/
 dist-ssr/
+**/dist-ssr/
+*.tsbuildinfo
 
 # Environment variables & Local config
 .env
